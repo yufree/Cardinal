@@ -51,6 +51,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 		scanList=as(parse$scanList, "DataFrame"),
 		mzArrayList=as(parse$mzArrayList, "DataFrame"),
 		intensityArrayList=as(parse$intensityArrayList, "DataFrame"),
+		mobilityArrayList=as(parse$imsArrayList, "DataFrame"),
 		metadata=experimentMetadata)
 }
 
@@ -61,6 +62,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 	ibdtype <- metadata(info)[["ibd binary type"]]
 	mz.ibdtype <- mzData(info)[["binary data type"]]
 	intensity.ibdtype <- intensityData(info)[["binary data type"]]
+	mobility.ibdtype <- mobilityData(info)[["binary data type"]]
 	# read binary data
 	if ( ibdtype == "continuous" ) {
 		mz <- matter_vec(path=file,
@@ -71,6 +73,10 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			type=Ctypeof(intensity.ibdtype[1]),
 			offset=intensityData(info)[["external offset"]],
 			extent=intensityData(info)[["external array length"]])
+		mobility <- matter_mat(path=file,
+			type=Ctypeof(mobility.ibdtype[1]),
+			offset=mobilityData(info)[["external offset"]],
+			extent=mobilityData(info)[["external array length"]])
 		if ( attach.only ) {
 			spectra <- intensity
 		} else {
@@ -86,6 +92,10 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			type=Ctypeof(intensity.ibdtype),
 			offset=intensityData(info)[["external offset"]],
 			extent=intensityData(info)[["external array length"]])
+		mobility <- matter_list(path=file,
+			type=Ctypeof(mobility.ibdtype),
+			offset=mobilityData(info)[["external offset"]],
+			extent=mobilityData(info)[["external array length"]])
 		if ( is.null(mass.range) || is.na(resolution) ) {
 			.message("auto-determining mass range and resolution...")
 			mz.info <- .detectMassRangeAndResolution(mz, units=units, BPPARAM=BPPARAM)
