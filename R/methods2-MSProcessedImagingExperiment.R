@@ -90,6 +90,9 @@ setReplaceMethod("mzData", "MSProcessedImagingExperiment",
 
 setMethod("intensityData", "MSProcessedImagingExperiment",
 	function(object, ...) atomdata(iData(object), ...))
+	  
+setMethod("mobilityData", "MSProcessedImagingExperiment",
+	function(object, ...) atomdata(iData(object), ...))
 
 setReplaceMethod("intensityData", "MSProcessedImagingExperiment",
 	function(object, ..., value) {
