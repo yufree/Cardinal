@@ -927,6 +927,61 @@ SEXP read_mz_metadata(pugi::xml_node run) {
 
 }
 
+SEXP read_mobility_metadata(pugi::xml_node run) {
+
+	int n = run.child("spectrumList").attribute("count").as_int();
+
+	SEXP binaryDataArrayList, binaryDataArrayNames;
+
+	PROTECT(binaryDataArrayList = Rf_allocVector(VECSXP, 4));
+	PROTECT(binaryDataArrayNames = Rf_allocVector(STRSXP, 4));
+
+	SEXP offset, arrayLength, encodedLength, dataType;
+
+	PROTECT(offset = Rf_allocVector(REALSXP, n));
+	PROTECT(arrayLength = Rf_allocVector(INTSXP, n));
+	PROTECT(encodedLength = Rf_allocVector(INTSXP, n));
+	PROTECT(dataType = Rf_allocVector(STRSXP, n));
+	
+	double * pOffset = REAL(offset);
+	int * pArrayLength = INTEGER(arrayLength);
+	int * pEncodedLength = INTEGER(encodedLength);
+
+	pugi::xml_node spectrum = run.child("spectrumList").first_child();
+
+	int i = 0;
+
+	while ( i < n && spectrum )
+	{
+		pugi::xml_node binaryDataArray = get_mobilityArray(spectrum);
+
+		pOffset[i] = get_external_offset(binaryDataArray);
+		pArrayLength[i] = get_external_array_length(binaryDataArray);
+		pEncodedLength[i] = get_external_encoded_length(binaryDataArray);
+		
+		SET_STRING_ELT(dataType, i,
+			Rf_mkChar(get_binary_data_type(binaryDataArray)));
+
+		spectrum = spectrum.next_sibling();
+		i++;
+	}
+
+	SET_STRING_ELT(binaryDataArrayNames, 0, Rf_mkChar(IMS_EXTERNAL_OFFSET_NAME));
+	SET_VECTOR_ELT(binaryDataArrayList, 0, offset);
+	SET_STRING_ELT(binaryDataArrayNames, 1, Rf_mkChar(IMS_EXTERNAL_ARRAY_LENGTH_NAME));
+	SET_VECTOR_ELT(binaryDataArrayList, 1, arrayLength);
+	SET_STRING_ELT(binaryDataArrayNames, 2, Rf_mkChar(IMS_EXTERNAL_ENCODED_LENGTH_NAME));
+	SET_VECTOR_ELT(binaryDataArrayList, 2, encodedLength);
+	SET_STRING_ELT(binaryDataArrayNames, 3, Rf_mkChar(MS_BINARY_DATA_TYPE_NAME));
+	SET_VECTOR_ELT(binaryDataArrayList, 3, dataType);
+
+	Rf_setAttrib(binaryDataArrayList, R_NamesSymbol, binaryDataArrayNames);
+	UNPROTECT(6);
+
+	return binaryDataArrayList;
+
+}
+
 SEXP read_intensity_metadata(pugi::xml_node run) {
 
 	int n = run.child("spectrumList").attribute("count").as_int();
@@ -1168,6 +1223,9 @@ extern "C"
 
 		SET_STRING_ELT(imzMLNames, 3, Rf_mkChar("intensityArrayList"));
 		SET_VECTOR_ELT(imzML, 3, read_intensity_metadata(run));
+		
+		SET_STRING_ELT(imzMLNames, 4, Rf_mkChar("mobilityArrayList"));
+		SET_VECTOR_ELT(imzML, 4, read_mobility_metadata(run));
 
 		// SET_STRING_ELT(imzMLNames, 4, Rf_mkChar("spectrumList"));
 		// SET_VECTOR_ELT(imzML, 4, read_spectrum_metadata(run));
