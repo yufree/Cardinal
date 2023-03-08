@@ -1207,8 +1207,8 @@ extern "C"
 
 		SEXP imzML, imzMLNames;
 
-		PROTECT(imzML = Rf_allocVector(VECSXP, 4));
-		PROTECT(imzMLNames = Rf_allocVector(STRSXP, 4));
+		PROTECT(imzML = Rf_allocVector(VECSXP, 5));
+		PROTECT(imzMLNames = Rf_allocVector(STRSXP, 5));
 
 		pugi::xml_node run = doc.child("mzML").child("run");
 
