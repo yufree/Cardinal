@@ -19,9 +19,9 @@ setValidity("MSImagingInfo", .valid.MSImagingInfo)
 
 setMethod("msiInfo", "MSImagingExperiment",
 	function(object, mz.type = "32-bit float",
-					intensity.type = "32-bit float", ...)
+					intensity.type = "32-bit float", mobility.type = "32-bit float",...)
 	{
-		info <- .new.MSContinuousImagingInfo(object, mz.type, intensity.type)
+		info <- .new.MSContinuousImagingInfo(object, mz.type, intensity.type, mobility.type)
 		info@metadata[["ibd binary type"]] <- "continuous"
 		info@metadata <- append(info@metadata, metadata(object))
 		info@metadata <- info@metadata[unique(names(info@metadata))]
@@ -31,10 +31,10 @@ setMethod("msiInfo", "MSImagingExperiment",
 
 setMethod("msiInfo", "MSContinuousImagingExperiment",
 	function(object, mz.type = "32-bit float",
-					intensity.type = "32-bit float", new = TRUE, ...)
+					intensity.type = "32-bit float", mobility.type = "32-bit float", new = TRUE, ...)
 	{
 		if ( new ) {
-			info <- .new.MSContinuousImagingInfo(object, mz.type, intensity.type)
+			info <- .new.MSContinuousImagingInfo(object, mz.type, intensity.type, mobility.type)
 		} else {
 			info <- .get.MSContinuousImagingInfo(object)
 		}
@@ -47,10 +47,10 @@ setMethod("msiInfo", "MSContinuousImagingExperiment",
 
 setMethod("msiInfo", "MSProcessedImagingExperiment",
 	function(object, mz.type = "32-bit float",
-					intensity.type = "32-bit float", new = TRUE, ...)
+					intensity.type = "32-bit float", mobility.type = "32-bit float", new = TRUE, ...)
 	{
 		if ( new ) {
-			info <- .new.MSProcessedImagingInfo(object, mz.type, intensity.type)
+			info <- .new.MSProcessedImagingInfo(object, mz.type, intensity.type, mobility.type)
 		} else {
 			info <- .get.MSProcessedImagingInfo(object)
 		}
@@ -87,11 +87,14 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 	scanList
 }
 
-.new.MSContinuousImagingInfo <- function(x, mz.type, intensity.type)
+.new.MSContinuousImagingInfo <- function(x, mz.type, intensity.type, mobility.type)
 {
 	mz.type <- match.arg(mz.type,
 		choices=c("32-bit float", "64-bit float"))
 	intensity.type <- match.arg(intensity.type,
+		choices=c("32-bit float", "64-bit float",
+			"16-bit integer", "32-bit integer", "64-bit integer"))
+	mobility.type <- match.arg(mobility.type,
 		choices=c("32-bit float", "64-bit float",
 			"16-bit integer", "32-bit integer", "64-bit integer"))
 	scanList <- .make.scanList(x)
@@ -109,6 +112,12 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 		check.names=FALSE)
 	offset <- c(0, cumsum(as.numeric(intensityArrayList[["external encoded length"]][-ncol(x)])))
 	intensityArrayList[["external offset"]] <- offset + intensityArrayList[["external offset"]]
+	mobilityArrayList <- DataFrame(
+		"external offset"=unname(rep(16 + Csizeof(mz.type) * nrow(x), ncol(x))),
+		"external array length"=unname(rep(nrow(x), ncol(x))),
+		"external encoded length"=unname(rep(Csizeof(mobility.type) * nrow(x), ncol(x))),
+		"binary data type"=rep(mobility.type, ncol(x)),
+		check.names=FALSE)
 	spectrumRepresentation <- ifelse(centroided(x),
 		"centroid spectrum", "profile spectrum")
 	experimentMetadata <- list("spectrum representation"=spectrumRepresentation)
@@ -116,6 +125,7 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 		scanList=scanList,
 		mzArrayList=mzArrayList,
 		intensityArrayList=intensityArrayList,
+		mobilityArrayList=mobilityArrayList,
 		metadata=experimentMetadata)
 }
 
@@ -148,6 +158,13 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 	} else {
 		.stop("m/z array in binary file do not match mz() of object")
 	}
+	mobility.type <- "32-bit float"
+	mobilityArrayList <- DataFrame(
+			"external offset"=unname(rep(16, ncol(x))),
+			"external array length"=unname(rep(nrow(x), ncol(x))),
+			"external encoded length"=unname(rep(Csizeof(mobility.type) * nrow(x), ncol(x))),
+			"binary data type"=rep(mobility.type, ncol(x)),
+			check.names=FALSE)
 	intensity.mode <- as.character(unique(ibd$datamode))
 	if ( length(intensity.mode) != 1 )
 		.stop("multiple binary types found for intensity array")
@@ -171,24 +188,30 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 		scanList=scanList,
 		mzArrayList=mzArrayList,
 		intensityArrayList=intensityArrayList,
+		mobilityArrayList=mobilityArrayList,
 		metadata=experimentMetadata)
 }
 
-.new.MSProcessedImagingInfo <- function(x, mz.type, intensity.type)
+.new.MSProcessedImagingInfo <- function(x, mz.type, intensity.type, mobility.type)
 {
 	mz.type <- match.arg(mz.type,
 		choices=c("32-bit float", "64-bit float"))
 	intensity.type <- match.arg(intensity.type,
 		choices=c("32-bit float", "64-bit float",
 			"16-bit integer", "32-bit integer", "64-bit integer"))
+	mobility.type <- match.arg(mobility.type,
+		choices=c("32-bit float", "64-bit float",
+			"16-bit integer", "32-bit integer", "64-bit integer"))
 	scanList <- .make.scanList(x)
 	if ( any(lengths(mzData(x)) != lengths(intensityData(x))) )
 		.stop("lengths of intensity and m/z arrays differ")
-	mzLengths <- intensityLengths <- lengths(iData(x))
+	mzLengths <- intensityLengths <- mobilityLengths <- lengths(iData(x))
 	mzExtent <- Csizeof(mz.type) * mzLengths
+	mobilityExtent <- Csizeof(mobility.type) * mobilityLengths
 	intensityExtent <- Csizeof(intensity.type) * intensityLengths
 	mzOffset <- c(16, 16 + cumsum(as.numeric(mzExtent + intensityLengths)[-ncol(x)]))
 	intensityOffset <- c(16 + cumsum(as.numeric(c(mzExtent[1L], mzExtent[-1L] + intensityLengths[-ncol(x)]))))
+	mobilityOffset <- c(16, 16 + cumsum(as.numeric(mobilityExtent + intensityLengths)[-ncol(x)]))
 	mzArrayList <- DataFrame(
 		"external offset"=unname(mzOffset),
 		"external array length"=unname(mzLengths),
@@ -201,6 +224,12 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 		"external encoded length"=unname(intensityExtent),
 		"binary data type"=rep(intensity.type, ncol(x)),
 		check.names=FALSE)
+	mobilityArrayList <- DataFrame(
+		"external offset"=unname(mobilityOffset),
+		"external array length"=unname(mobilityLengths),
+		"external encoded length"=unname(mobilityExtent),
+		"binary data type"=rep(mobility.type, ncol(x)),
+		check.names=FALSE)
 	spectrumRepresentation <- ifelse(centroided(x),
 		"centroid spectrum", "profile spectrum")
 	experimentMetadata <- list("spectrum representation"=spectrumRepresentation)
@@ -208,6 +237,7 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 		scanList=scanList,
 		mzArrayList=mzArrayList,
 		intensityArrayList=intensityArrayList,
+		mobilityArrayList=mobilityArrayList,
 		metadata=experimentMetadata)
 }
 
@@ -235,6 +265,15 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 		"external encoded length"=unname(Csizeof(mz.type) * mz.ibd$extent),
 		"binary data type"=rep(mz.type, ncol(x)),
 		check.names=FALSE)
+	mobility.ibd <- as.list(atomdata(mobilityData(x)))
+	mobility.type <- Nametypeof(mobility.mode)
+	mobility.ibd$extent <- as.integer(mobility.ibd$extent)
+	mobilityArrayList <- DataFrame(
+		"external offset"=mobility.ibd$offset,
+		"external array length"=mobility.ibd$extent,
+		"external encoded length"=unname(Csizeof(mobility.type) * mobility.ibd$extent),
+		"binary data type"=rep(moblity.type, ncol(x)),
+		check.names=FALSE)
 	intensity.ibd <- as.list(atomdata(intensityData(x)))
 	intensity.mode <- as.character(unique(intensity.ibd$datamode))
 	if ( length(intensity.mode) != 1 )
@@ -259,6 +298,7 @@ setMethod("msiInfo", "MSProcessedImagingExperiment",
 		scanList=scanList,
 		mzArrayList=mzArrayList,
 		intensityArrayList=intensityArrayList,
+		mobilityArrayList=mobilityArrayList,
 		metadata=experimentMetadata)
 }
 
@@ -270,6 +310,7 @@ setMethod("as.list", "MSImagingInfo",
 		list(scanList=as.list(x@scanList),
 			mzArrayList=as.list(x@mzArrayList),
 			intensityArrayList=as.list(x@intensityArrayList),
+		     	mobilityArrayList=as.list(x@mobilityArrayList),
 			experimentMetadata=x@metadata)
 	})
 
@@ -288,6 +329,11 @@ setMethod("mzData", "MSImagingInfo",
 setMethod("intensityData", "MSImagingInfo",
 	function(object, ...) object@intensityArrayList)
 
+# mobility array list
+
+setMethod("mobilityData", "MSImagingInfo",
+	function(object, ...) object@mobilityArrayList)
+	  
 # centroided
 
 setMethod("isCentroided", "MSImagingInfo",
