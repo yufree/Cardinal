@@ -60,6 +60,23 @@ pugi::xml_node get_mzArray(pugi::xml_node spectrum)
 	return node;
 }
 
+pugi::xml_node get_mobilityArray(pugi::xml_node spectrum)
+{
+	pugi::xml_node ref, id, node = spectrum.child("binaryDataArrayList").first_child();
+	for ( ; node; node = node.next_sibling() )
+	{
+		// parse m/z array
+		id =  node.find_child_by_attribute("cvParam", "accession", IMS_ARRAY_ID);
+		if ( id )
+			return node;
+		ref = get_referenceableParamGroup(node);
+		id =  ref.find_child_by_attribute("cvParam", "accession", IMS_ARRAY_ID);
+		if ( id )
+			return node;
+	}
+	return node;
+}
+
 pugi::xml_node get_intensityArray(pugi::xml_node spectrum)
 {
 	pugi::xml_node ref, id, node = spectrum.child("binaryDataArrayList").first_child();
