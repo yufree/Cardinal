@@ -51,7 +51,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 		scanList=as(parse$scanList, "DataFrame"),
 		mzArrayList=as(parse$mzArrayList, "DataFrame"),
 		intensityArrayList=as(parse$intensityArrayList, "DataFrame"),
-		mobilityArrayList=as(parse$imsArrayList, "DataFrame"),
+		mobilityArrayList=as(parse$mobilityArrayList, "DataFrame"),
 		metadata=experimentMetadata)
 }
 
