@@ -203,11 +203,13 @@ setClass("SummarySegmentationTest", contains="SummaryDataFrame")
 	slots = c(
 		scanList = "DataFrame",
 		mzArrayList = "DataFrame",
-		intensityArrayList = "DataFrame"),
+		intensityArrayList = "DataFrame",
+		mobilityArraylist = "DataFrame"),
 	prototype = prototype(
 		scanList = DataFrame(),
 		mzArrayList = DataFrame(),
-		intensityArrayList = DataFrame()))
+		intensityArrayList = DataFrame(),
+		mobilityArraylist = DataFrame())
 
 #### Classes for optical images (microscopy, etc.) ###
 ## -------------------------------------------------
