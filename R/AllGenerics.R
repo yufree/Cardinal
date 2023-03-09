@@ -13,8 +13,6 @@ setGeneric("imageData<-")
 ## -----------------------------------------------
 setGeneric("iData", function(x, i, ...) standardGeneric("iData"))
 setGeneric("iData<-", function(x, i, ..., value) standardGeneric("iData<-"))
-setGeneric("mData", function(x, i, ...) standardGeneric("mData"))
-setGeneric("mData<-", function(x, i, ..., value) standardGeneric("mData<-"))
 
 #### Basic accessor, setter, and manipulation ####
 ## -----------------------------------------------
