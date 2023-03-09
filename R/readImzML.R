@@ -78,10 +78,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			type=Ctypeof(mobility.ibdtype[1]),
 			offset=mobilityData(info)[["external offset"]],
 			extent=mobilityData(info)[["external array length"]])
-		# aligh mz with ion mobility
-		mzi <- !duplicated(round(mz,4))
-		mzu <- mz[mzi]
-		mobiblityu <- mobility[mzi]
+		
 		if ( attach.only ) {
 			spectra <- intensity
 		} else {
@@ -186,7 +183,6 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			pixelData=PositionDataFrame(coord=coord,
 				run=metadata(info)[["name"]]),
 			metadata=metadata(info),
-			mobilitydata = MassDataFrame(mz=mzu,mobility=mobilityu),
 			centroided=isCentroided(info))
 	} else {
 		.stop("unrecognized outclass")
