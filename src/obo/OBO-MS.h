@@ -2876,13 +2876,13 @@ is_a: MS:1000503 ! scan attribute */
 relationship: part_of MS:1000442 ! spectrum
 relationship: part_of MS:1000625 ! chromatogram */
 
-#define IMS_ARRAY_ID "IMS:1000514"
-#define IMS_ARRAY_NAME "mobility array"
-/* def: "A data array of m/z values." [PSI:MS]
-xref: binary-data-type:IMS\:1000521 "32-bit float"
-xref: binary-data-type:IMS\:1000523 "64-bit float"
-is_a: IMS:1000513 ! binary data array
-relationship: has_units IMS:1000040 ! Ω */
+#define IMS_ARRAY_ID "MS:1003006"
+#define IMS_ARRAY_NAME "mean inverse reduced ion mobility array"
+/* def: "A data array of mobility values." [PSI:MS]
+xref: binary-data-type:MS\:1000521 "32-bit float"
+xref: binary-data-type:MS\:1000523 "64-bit float"
+is_a: MS:1000513 ! binary data array
+relationship: has_units MS:1002814 ! volt-second per square centimeter */
 
 #define MS_MZ_ARRAY_ID "MS:1000514"
 #define MS_MZ_ARRAY_NAME "m/z array"
