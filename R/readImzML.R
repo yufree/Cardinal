@@ -79,7 +79,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			offset=mobilityData(info)[["external offset"]],
 			extent=mobilityData(info)[["external array length"]])
 		
-		if ( attach.only ) {
+		if ( attach.only==T ) {
 			spectra <- intensity
 		} else {
 			spectra <- intensity[]
