@@ -87,11 +87,17 @@ setReplaceMethod("mzData", "MSProcessedImagingExperiment",
 		if ( validObject(object) )
 			object
 	})
-
-setMethod("intensityData", "MSProcessedImagingExperiment",
-	function(object, ...) atomdata(iData(object), ...))
-	  
 setMethod("mobilityData", "MSProcessedImagingExperiment",
+	function(object, ...) atomindex(mData(object), ...))
+
+setReplaceMethod("mobilityData", "MSProcessedImagingExperiment",
+	function(object, ..., value) {
+		atomindex(mData(object)) <- value
+		if ( validObject(object) )
+			object
+	})
+	  
+setMethod("intensityData", "MSProcessedImagingExperiment",
 	function(object, ...) atomdata(iData(object), ...))
 
 setReplaceMethod("intensityData", "MSProcessedImagingExperiment",
