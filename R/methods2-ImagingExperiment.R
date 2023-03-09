@@ -34,38 +34,6 @@ setReplaceMethod("iData", c("ImagingExperiment", "missing"),
 			x
 	})
 
-## mobilityData methods
-
-setMethod("mData", "ImagingExperiment", 
-	function(y) y@mobilityData)
-
-setReplaceMethod("mData", "ImagingExperiment",
-	function(y, value) {
-		y@mobilityData <- value
-		if ( validObject(y) )
-			y
-	})
-
-setMethod("mData", c("ImagingExperiment", "ANY"),
-	function(x, i, ...) x@mobilityData[[i, exact=FALSE]])
-
-setMethod("mData", c("ImagingExperiment", "missing"), 
-	function(x, i, ...) x@mobilityData[[1L]])
-
-setReplaceMethod("mData", c("ImagingExperiment", "ANY"),
-	function(x, i, ..., value) {
-		x@mobilityData[[i]] <- value
-		if ( validObject(x) )
-			x
-	})
-
-setReplaceMethod("mData", c("ImagingExperiment", "missing"),
-	function(x, i, ..., value) {
-		x@mobilityData[[1L]] <- value
-		if ( validObject(x) )
-			x
-	})
-
 ## featureData methods
 
 setMethod("fData", "ImagingExperiment",
