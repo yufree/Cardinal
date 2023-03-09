@@ -63,7 +63,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 	mz.ibdtype <- mzData(info)[["binary data type"]]
 	intensity.ibdtype <- intensityData(info)[["binary data type"]]
 	mobility.ibdtype <- mobilityData(info)[["binary data type"]]
-	if(mobility.ibdtype[1]=='') mobility.ibdtype <- "32-bit float"
+	if(mobility.ibdtype[1]=='') mobility.ibdtype <- rep("32-bit float",length(mobility.ibdtype))
 	# read binary data
 	if ( ibdtype == "continuous" ) {
 		mz <- matter_vec(path=file,
