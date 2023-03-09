@@ -79,10 +79,10 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			offset=mobilityData(info)[["external offset"]],
 			extent=mobilityData(info)[["external array length"]])
 		
-		if ( attach.only==T ) {
+		if ( attach.only ) {
 			spectra <- intensity
 		} else {
-			spectra <- intensity[]
+			spectra <- mobility
 		}
 		mz <- mz[]
 	} else if ( ibdtype == "processed" ) {
@@ -134,7 +134,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			tol <- c(absolute = resolution)
 		}
 		mz.bins <- c(mzout[1] - error[1], mzout + error)
-		if ( attach.only==T ) {
+		if ( attach.only ) {
 			data <- list(keys=mz, values=intensity)
 			mz <- mzout
 			spectra <- sparse_mat(index=data$keys, data=data$values,
