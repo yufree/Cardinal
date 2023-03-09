@@ -134,11 +134,17 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			tol <- c(absolute = resolution)
 		}
 		mz.bins <- c(mzout[1] - error[1], mzout + error)
-		if ( attach.only ) {
+		if ( attach.only==T ) {
 			data <- list(keys=mz, values=intensity)
 			mz <- mzout
 			spectra <- sparse_mat(index=data$keys, data=data$values,
 				domain=mz, nrow=length(mz), ncol=length(intensity),
+				tolerance=tol, sampler="linear")
+		} else if (attach.only=='M') {
+			data <- list(keys=mz, values=mobility)
+			mz <- mzout
+			spectra <- sparse_mat(index=data$keys, data=data$values,
+				domain=mz, nrow=length(mz), ncol=length(mobility),
 				tolerance=tol, sampler="linear")
 		} else {
 			if ( outclass == "MSImagingExperiment") {
