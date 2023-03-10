@@ -2878,11 +2878,14 @@ relationship: part_of MS:1000625 ! chromatogram */
 
 #define IMS_ARRAY_ID "MS:1003006"
 #define IMS_ARRAY_NAME "mean inverse reduced ion mobility array"
-/* def: "A data array of mobility values." [PSI:MS]
+/* def: "Array of population mean ion mobility values based on ion separation in gaseous phase due to different ion mobilities under an electric field based on ion size, m/z and shape, normalized for the local conditions and reported in volt-second per square centimeter, corresponding to a spectrum of individual peaks encoded with an m/z array." [PSI:MS]
 xref: binary-data-type:MS\:1000521 "32-bit float"
 xref: binary-data-type:MS\:1000523 "64-bit float"
-is_a: MS:1000513 ! binary data array
-relationship: has_units MS:1002814 ! volt-second per square centimeter */
+is_a: MS:1000513 ! ion mobility array
+relationship: has_units MS:1002814 ! volt-second per square centimeter
+relationship: has_value_type xsd:float ! The allowed value-type for this CV term
+
+
 
 #define MS_MZ_ARRAY_ID "MS:1000514"
 #define MS_MZ_ARRAY_NAME "m/z array"
