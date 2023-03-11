@@ -151,8 +151,8 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			# data <- list(keys=mz, values=mobility)
 			# mz <- mzout
 			# spectra <- sparse_mat(index=data$keys, data=data$values,
-				domain=mz, nrow=length(mz), ncol=length(mobility),
-				tolerance=tol, sampler="linear")
+			#	domain=mz, nrow=length(mz), ncol=length(mobility),
+			#	tolerance=tol, sampler="linear")
 		} else {
 			if ( outclass == "MSImagingExperiment") {
 				data <- list(keys=mz[], values=intensity[])
