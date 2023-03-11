@@ -141,6 +141,11 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 				domain=mz, nrow=length(mz), ncol=length(intensity),
 				tolerance=tol, sampler="linear")
 		} else if (attach.only==F) {
+			#ccsout <- seq(from=100,to=400,by=0.1)
+			#data <- list(keys=mobility, values=intensity)
+			#spectra <- sparse_mat(index=data$keys, data=data$values,
+				domain=ccsout, nrow=length(ccsout), ncol=length(intensity),
+				tolerance=0.05, sampler="linear")
 			data <- list(keys=mz, values=mobility)
 			mz <- mzout
 			spectra <- sparse_mat(index=data$keys, data=data$values,
