@@ -144,6 +144,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			ccsout <- seq(from=100,to=400,by=0.1)*100000
 			ccsmzout <- outer(ccsout,mzout,'+')
 			ccsmzoutv <- as.vector(ccsmzout)
+		 	ccsmzoutv <- ccsmzoutv[order(ccsmzoutv)]
 			data <- list(keys=round(mobility,1)*100000+mz, values=intensity)
 			spectra <- sparse_mat(index=data$keys, data=data$values,
 				domain=ccsmzoutv, nrow=length(ccsmzoutv), ncol=length(intensity),
@@ -152,7 +153,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			# mz <- mzout
 			# spectra <- sparse_mat(index=data$keys, data=data$values,
 			#	domain=mz, nrow=length(mz), ncol=length(mobility),
-			#	tolerance=tol, sampler="linear")
+			#	tolerance=tol, sampler="max")
 		} else {
 			if ( outclass == "MSImagingExperiment") {
 				data <- list(keys=mz[], values=intensity[])
