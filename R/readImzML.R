@@ -141,7 +141,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 				domain=mz, nrow=length(mz), ncol=length(intensity),
 				tolerance=tol, sampler="linear")
 		} else if (attach.only==F) {
-			ccsout <- seq(from=50,to=500,by=0.1)*100000
+			ccsout <- seq(from=100,to=500,by=0.1)*100000
 			ccsmzout <- outer(ccsout,mzout,'+')
 			ccsmzoutv <- as.vector(ccsmzout)
 		 	ccsmzoutv <- ccsmzoutv[order(ccsmzoutv)]
