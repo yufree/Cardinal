@@ -145,7 +145,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 			ccsmzout <- outer(ccsout,mzout,'+')
 			ccsmzoutv <- as.vector(ccsmzout)
 		 	ccsmzoutv <- ccsmzoutv[order(ccsmzoutv)]
-			spectra <- sparse_mat(keys=mobility*100000+mz, data=intensity,
+			spectra <- sparse_mat(index=mobility*100000+mz, data=intensity,
 				domain=ccsmzoutv, nrow=length(ccsmzoutv), ncol=length(intensity),
 				tolerance=tol, sampler="linear")
 			# data <- list(keys=mz, values=mobility)
