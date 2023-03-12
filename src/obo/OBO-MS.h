@@ -2883,9 +2883,7 @@ xref: binary-data-type:MS\:1000521 "32-bit float"
 xref: binary-data-type:MS\:1000523 "64-bit float"
 is_a: MS:1000513 ! ion mobility array
 relationship: has_units MS:1002814 ! volt-second per square centimeter
-relationship: has_value_type xsd:float ! The allowed value-type for this CV term
-
-
+relationship: has_value_type xsd:float ! The allowed value-type for this CV term */
 
 #define MS_MZ_ARRAY_ID "MS:1000514"
 #define MS_MZ_ARRAY_NAME "m/z array"
