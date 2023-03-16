@@ -82,7 +82,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 		if ( attach.only ) {
 			spectra <- intensity
 		} else {
-			spectra <- mobility
+			spectra <- intensity
 		}
 		mz <- mz[]
 	} else if ( ibdtype == "processed" ) {
