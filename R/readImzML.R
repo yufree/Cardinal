@@ -5,7 +5,7 @@
 readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 	mass.range = NULL, resolution = NA, units = c("ppm", "mz"),
 	as = "MSImagingExperiment", parse.only=FALSE,
-	BPPARAM = getCardinalBPPARAM(), ...)
+	BPPARAM = getCardinalBPPARAM(), mstep = 0.1, ...)
 {
 	# get output format
 	outclass <- match.arg(as)
@@ -35,7 +35,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 	units <- match.arg(units)
 	.message("reading ibd file: '", ibdpath, "'")
 	object <- .readIbd(ibdpath, info, outclass=outclass, attach.only=attach.only,
-		mass.range=mass.range, resolution=resolution, units=units, BPPARAM=BPPARAM)
+		mass.range=mass.range, resolution=resolution, units=units, BPPARAM=BPPARAM,mstep=msetp)
 	.log.collapse("loaded dataset:", capture.output(print(object)))
 	if ( validObject(object) ) {
 		.message("done.")
@@ -56,7 +56,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 }
 
 .readIbd <- function(file, info, outclass, attach.only,
-	mass.range, resolution, units, BPPARAM)
+	mass.range, resolution, units, BPPARAM, mstep=0.1)
 {
 	file <- normalizePath(file)
 	ibdtype <- metadata(info)[["ibd binary type"]]
@@ -141,7 +141,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 				domain=mz, nrow=length(mz), ncol=length(intensity),
 				tolerance=tol, sampler="linear")
 		} else if (attach.only==F) {
-			ccsout <- seq(from=100,to=500,by=0.1)*100000
+			ccsout <- seq(from=100,to=500,by=mstep)*100000
 			ccsmzout <- outer(ccsout,mzout,'+')
 			ccsmzoutv <- as.vector(ccsmzout)
 		 	ccsmzoutv <- ccsmzoutv[order(ccsmzoutv)]
