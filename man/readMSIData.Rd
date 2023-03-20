@@ -15,7 +15,7 @@ readMSIData(file, \dots)
 readImzML(name, folder = getwd(), attach.only = TRUE,
 	mass.range = NULL, resolution = NA, units = c("ppm", "mz"),
 	as = "MSImagingExperiment", parse.only = FALSE,
-	BPPARAM = getCardinalBPPARAM(), \dots)
+	BPPARAM = getCardinalBPPARAM(), mstep = 0.1, \dots)
 
 ## Read Analyze 7.5 files
 readAnalyze(name, folder = getwd(), attach.only = TRUE,
@@ -32,6 +32,7 @@ readAnalyze(name, folder = getwd(), attach.only = TRUE,
 	\item{as}{After reading in the data, what class of object should be returned? As of Cardinal version >= 2.6, only \code{MSImagingExperiment} is supported.}
 	\item{parse.only}{If TRUE, return only the parsed imzML metadata without creating a new imaging experiment object. (May be useful for diagnosing import problems.)}
 	\item{BPPARAM}{An optional instance of \code{BiocParallelParam}. See documentation for \code{\link{bplapply}}. This is only used when \code{mass.range=NULL} and \code{attach.only=TRUE}, when reading the mass range from the m/z data of a "processed" imzML file.}
+	\item{mstep} mobility step, default 0.1
 	\item{\dots}{Additional arguments passed to read functions.}
 }
 \details{
