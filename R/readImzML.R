@@ -35,7 +35,7 @@ readImzML <- function(name, folder = getwd(), attach.only = TRUE,
 	units <- match.arg(units)
 	.message("reading ibd file: '", ibdpath, "'")
 	object <- .readIbd(ibdpath, info, outclass=outclass, attach.only=attach.only,
-		mass.range=mass.range, resolution=resolution, units=units, BPPARAM=BPPARAM,mstep=msetp)
+		mass.range=mass.range, resolution=resolution, units=units, BPPARAM=BPPARAM,mstep=mstep)
 	.log.collapse("loaded dataset:", capture.output(print(object)))
 	if ( validObject(object) ) {
 		.message("done.")
